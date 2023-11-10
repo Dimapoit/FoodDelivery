@@ -1,6 +1,36 @@
 <resources>
-    <string name="app_name">FoodDelivery</string>
+    <!--    <string name="app_name">FoodDelivery</string>-->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="app_name">GFG | CollapseToolbar</string>
+    <string name="content">With the idea of imparting programming
+      knowledge, Mr. Sandeep Jain, an IIT Roorkee alumnus started a
+      dream, GeeksforGeeks. Whether programming excites you or you feel
+      stifled, wondering how to prepare for interview questions or how to
+      ace data structures and algorithms, GeeksforGeeks is a one-stop solution.
+      With every tick of time, we are adding arrows in our quiver. From articles
+      on various computer science subjects to programming problems for practice,
+      from basic to premium courses, from technologies to entrance examinations,
+      we have been building ample content with superior quality. In a short span,
+      we have built a community of 1 Million+ Geeks around the world, 20,000+
+      Contributors and 500+ Campus Ambassadors in various colleges across the nation.
+      Our success stories include a lot of students who benefitted in their placements
+      and landed jobs at tech giants. Our vision is to build a gigantic network of
+      geeks and we are only a fraction of it yet.
+  </string>
+
+    <string name="menu">Меню</string>
+    <string name="profile">Профиль</string>
+    <string name="cart">Корзина</string>
+    <string name="title">Заголовок</string>
+    <string name="desc">Описание</string>
+
+    <string-array name="cities">
+        <item>Москва</item>
+        <item>Тула</item>
+        <item>Ростов</item>
+        <item>Таганрог</item>
+    </string-array>
 </resources>
