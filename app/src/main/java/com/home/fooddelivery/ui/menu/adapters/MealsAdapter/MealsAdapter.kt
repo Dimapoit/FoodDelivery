@@ -29,7 +29,7 @@ class MealsAdapter: ListAdapter<MealItem, MealsVH>(MealItemCallback()) {
             descriptionTv.text = mealItem.category
 
             Picasso.get().load(mealItem.imagePath)
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.placeholder)
                 .into(imageView)
             root.setOnClickListener {
                 onMealItemClick?.invoke(mealItem)

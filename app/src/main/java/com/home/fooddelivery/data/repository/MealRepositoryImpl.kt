@@ -1,6 +1,5 @@
 package com.home.fooddelivery.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.home.fooddelivery.data.network.ApiFactory
@@ -36,7 +35,8 @@ class MealRepositoryImpl() : MealRepository {
             mapper.mapCategoryDtoToEntity(it)
         }
         if (list != null) {
-            categoriesList.addAll(list)
+            list.sortedBy { it.name }
+            categoriesList.addAll(list.sortedBy { it.name })
             val oldItem = categoriesList.first()
             val newItem = MealCategoryItem(id = oldItem.id, name = oldItem.name, true)
             categoriesList[0] = newItem
@@ -49,7 +49,6 @@ class MealRepositoryImpl() : MealRepository {
     }
 
     suspend fun loadMealsByCategory(newItem: MealCategoryItem) {
-
 
         val meals = apiService.getMealsByCategory(newItem.name)
         val list = meals.meals?.map {
@@ -64,28 +63,24 @@ class MealRepositoryImpl() : MealRepository {
         }
     }
 
-    override fun updateActiveCategory(mealCategoryName: String) {
+    override fun updateActiveCategory(mealCategoryName: String) : Int {
 
         val oldItem = categoriesList.find { it.enabled }
         val newItem = categoriesList.find { it.name == mealCategoryName }
 
+        val newIndex = categoriesList.indexOf(newItem)
+
         if (oldItem != null && newItem != null && oldItem.name != mealCategoryName) {
             val oldIndex = categoriesList.indexOf(oldItem)
-            val newIndex = categoriesList.indexOf(newItem)
-            Log.d("indexes", "oldItem:${oldItem}")
-            Log.d("indexes", "newItem:${newItem}")
-            Log.d("indexes", "oldIndex:${oldIndex} newIndex:${newIndex}")
-
-            oldItem?.let {
                 categoriesList[oldIndex] =
                     MealCategoryItem(id = oldItem.id, name = oldItem.name, enabled = false)
                 setCategoriesListLD()
                 categoriesList[newIndex] =
                     MealCategoryItem(id = newItem.id, name = newItem.name, enabled = true)
-
                 setCategoriesListLD()
-            }
         }
+
+        return newIndex
     }
 
     override fun getMealPositionByCategory(newItem: MealCategoryItem): Int {
@@ -93,17 +88,18 @@ class MealRepositoryImpl() : MealRepository {
         val oldItem = categoriesList.find { it.enabled }
 
         val oldIndex = categoriesList.indexOf(oldItem)
+
         val newIndex = categoriesList.indexOf(newItem)
 
-        oldItem?.let {
-            categoriesList[oldIndex] =
-                MealCategoryItem(id = oldItem.id, name = oldItem.name, enabled = false)
-            setCategoriesListLD()
-            categoriesList[newIndex] =
-                MealCategoryItem(id = newItem.id, name = newItem.name, enabled = true)
-            setCategoriesListLD()
+        if (oldItem != newItem) {
+            oldItem?.let {
+                categoriesList[oldIndex] =
+                    MealCategoryItem(id = oldItem.id, name = oldItem.name, enabled = false)
+                categoriesList[newIndex] =
+                    MealCategoryItem(id = newItem.id, name = newItem.name, enabled = true)
+                setCategoriesListLD()
+            }
         }
-
         val categoryName = newItem.name
         val meal = mealsList.find { it.category == categoryName }
         return mealsList.indexOf(meal)

@@ -35,8 +35,8 @@ class MenuViewModel : ViewModel() {
         return  getMealPositionByCategoryUceCase.getMealPositionByCategory(mealCategoryItem)
     }
 
-    fun updateActiveCategory(mealCategoryName: String) {
-        updateActiveCategoryUseCase.updateActiveCategory((mealCategoryName))
+    fun updateActiveCategory(mealCategoryName: String): Int {
+        return updateActiveCategoryUseCase.updateActiveCategory(mealCategoryName)
     }
 }
 

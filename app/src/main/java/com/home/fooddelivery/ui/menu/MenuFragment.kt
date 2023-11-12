@@ -1,7 +1,6 @@
 package com.home.fooddelivery.ui.menu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,33 +34,24 @@ class MenuFragment : Fragment() {
             ViewModelProvider(this)[MenuViewModel::class.java]
 
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViewPager()
         initCategoriesRW()
         initMealsRW()
 
         menuViewModel.mealCategoriesList.observe(viewLifecycleOwner) {
 
-            Log.d("MealCategoryItemCallback", it.toString())
             mealCategoriesAdapter.submitList(it)
         }
         menuViewModel.mealsList.observe(viewLifecycleOwner) {
-            Log.d("mealsListObserve", it.size.toString())
             mealsAdapter.submitList(it)
         }
 
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun initViewPager() {
@@ -90,8 +80,8 @@ class MenuFragment : Fragment() {
 
     private fun initCategoriesRW() {
         mealCategoriesAdapter = MealCategoriesAdapter()
-        binding.rvCategoryList.itemAnimator = null
         binding.rvCategoryList.adapter = mealCategoriesAdapter
+        binding.rvCategoryList.itemAnimator = null
         binding.rvCategoryList.recycledViewPool.setMaxRecycledViews(
             MealCategoriesAdapter.VIEW_TYPE_ENABLED,
             MealCategoriesAdapter.MAX_POOL_SIZE
@@ -112,8 +102,12 @@ class MenuFragment : Fragment() {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = binding.rvMealsList.layoutManager as LinearLayoutManager
                 val firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+                //val visibleItemCount = layoutManager.childCount
+                //val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                //val totalItemCount = layoutManager.itemCount
                 val meal = mealsAdapter.currentList[firstVisibleItem].copy()
-                menuViewModel.updateActiveCategory(meal.category)
+
+                updateActiveCategory(meal.category)
             }
         })
         initMealClickListener()
@@ -121,9 +115,29 @@ class MenuFragment : Fragment() {
 
     private fun initCategoryClickListener() {
 
-        mealCategoriesAdapter.onCategoryItemClick = {
-            val position = menuViewModel.getMealsPositionByCategory(it)
-            binding.rvMealsList.scrollToPosition(position)
+        mealCategoriesAdapter.onCategoryItemClick = { mealCategory ->
+
+            val mealPosition = menuViewModel.getMealsPositionByCategory(mealCategory) + 1
+            val layoutManager = binding.rvMealsList.layoutManager as LinearLayoutManager
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val offset = mealPosition - firstVisibleItemPosition
+            layoutManager.scrollToPositionWithOffset(mealPosition, offset)
+            updateActiveCategory(mealCategory.name)
+        }
+    }
+
+    private fun updateActiveCategory(activeCategoryName: String) {
+
+        // Обновление активной категории
+        val activeCategoryPosition = menuViewModel.updateActiveCategory(activeCategoryName)
+
+        // Проверяем видимость активной категории и прокручиваем, если она не видна
+        val layoutManager = binding.rvCategoryList.layoutManager as LinearLayoutManager
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+        if (activeCategoryPosition < firstVisibleItemPosition || activeCategoryPosition > lastVisibleItemPosition) {
+
+            binding.rvCategoryList.scrollToPosition(activeCategoryPosition)
         }
     }
 
@@ -134,4 +148,11 @@ class MenuFragment : Fragment() {
             Toast.makeText(context, it.name, Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
+
+

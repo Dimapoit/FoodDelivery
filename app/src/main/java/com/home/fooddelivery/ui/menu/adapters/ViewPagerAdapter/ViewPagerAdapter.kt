@@ -8,7 +8,7 @@ import com.home.fooddelivery.databinding.ItemPageBinding
 
 class ViewPagerAdapter : RecyclerView.Adapter<ViewPagerAdapter.PagerVH>() {
 
-    private val res = arrayOf(R.drawable.rectangle, R.drawable.rectangle2, R.drawable.rectangle3)
+    private val res = arrayOf(R.drawable.view_page1, R.drawable.view_page2, R.drawable.view_page3)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerVH {
 

@@ -14,7 +14,7 @@ class MealCategoryItemCallback: DiffUtil.ItemCallback<MealCategoryItem>() {
         return javaClass.hashCode()
     }
     override fun areItemsTheSame(oldItem: MealCategoryItem, newItem: MealCategoryItem): Boolean {
-        return oldItem.enabled == newItem.enabled
+        return oldItem.id == newItem.id
     }
     override fun areContentsTheSame(oldItem: MealCategoryItem, newItem: MealCategoryItem): Boolean {
         return oldItem == newItem
