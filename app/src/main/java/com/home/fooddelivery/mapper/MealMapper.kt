@@ -5,8 +5,9 @@ import com.home.fooddelivery.data.network.models.MealCategoryDto
 import com.home.fooddelivery.data.network.models.MealDto
 import com.home.fooddelivery.domain.MealCategoryItem
 import com.home.fooddelivery.domain.MealItem
+import javax.inject.Inject
 
-class MealMapper {
+class MealMapper @Inject constructor() {
 
     fun mapCategoryDtoToEntity(mealCategoryDto: MealCategoryDto): MealCategoryItem {
         return MealCategoryItem(

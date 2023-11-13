@@ -1,7 +1,12 @@
 package com.home.fooddelivery.domain
 
-class GetMealCategoriesListUseCase(
+import androidx.lifecycle.LiveData
+import javax.inject.Inject
+
+class GetMealCategoriesListUseCase @Inject constructor(
     private val repository: MealRepository
 ) {
-    operator fun invoke() = repository.getCategoriesList()
+    fun getMealCategoriesList(): LiveData<List<MealCategoryItem>> {
+        return repository.getCategoriesList()
+    }
 }

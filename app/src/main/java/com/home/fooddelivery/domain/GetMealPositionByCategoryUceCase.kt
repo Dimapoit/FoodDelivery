@@ -1,6 +1,8 @@
 package com.home.fooddelivery.domain
 
-class GetMealPositionByCategoryUceCase(
+import javax.inject.Inject
+
+class GetMealPositionByCategoryUceCase @Inject constructor(
     private val repository: MealRepository
 ) {
     fun getMealPositionByCategory(categoryItem: MealCategoryItem): Int {

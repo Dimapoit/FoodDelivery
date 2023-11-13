@@ -1,18 +1,19 @@
 package com.home.fooddelivery.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.home.fooddelivery.data.network.ApiFactory
+import com.home.fooddelivery.data.network.ApiService
 import com.home.fooddelivery.domain.MealCategoryItem
 import com.home.fooddelivery.domain.MealItem
 import com.home.fooddelivery.domain.MealRepository
 import com.home.fooddelivery.mapper.MealMapper
+import javax.inject.Inject
 
-class MealRepositoryImpl() : MealRepository {
-
-    private val apiService = ApiFactory.apiService
-    private val mapper = MealMapper()
-
+class MealRepositoryImpl @Inject constructor(
+    private val mapper: MealMapper,
+    private val apiService: ApiService
+) : MealRepository {
 
     private val categoriesListLD = MutableLiveData<List<MealCategoryItem>>()
     private var categoriesList = mutableListOf<MealCategoryItem>()
@@ -30,6 +31,7 @@ class MealRepositoryImpl() : MealRepository {
 
     override suspend fun loadData() {
         val categories = apiService.getAllMealCategories().categories
+
         val list = categories?.map {
 
             mapper.mapCategoryDtoToEntity(it)
@@ -43,8 +45,10 @@ class MealRepositoryImpl() : MealRepository {
             for (i in categoriesList) {
                 loadMealsByCategory(i)
             }
+            Log.d("loadData", "categoriesListLD $categoriesListLD")
             setCategoriesListLD()
             setMealsListLD()
+            Log.d("loadData", "mealsListLD $mealsListLD")
         }
     }
 

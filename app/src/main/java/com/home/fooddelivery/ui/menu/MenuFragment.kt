@@ -1,6 +1,8 @@
 package com.home.fooddelivery.ui.menu
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +13,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.home.fooddelivery.R
 import com.home.fooddelivery.databinding.FragmentMenuBinding
+import com.home.fooddelivery.ui.MealApplication
+import com.home.fooddelivery.ui.ViewModelFactory
 import com.home.fooddelivery.ui.menu.adapters.CategoriesAdapter.MealCategoriesAdapter
 import com.home.fooddelivery.ui.menu.adapters.MealsAdapter.MealsAdapter
 import com.home.fooddelivery.ui.menu.adapters.ViewPagerAdapter.ViewPagerAdapter
+import javax.inject.Inject
 
 class MenuFragment : Fragment() {
 
     private var _binding: FragmentMenuBinding? = null
     private val binding
         get() = _binding ?: throw java.lang.RuntimeException("FragmentMenuBinding == null")
+
+    private val component by lazy {
+        (requireActivity().application as MealApplication).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     private lateinit var menuViewModel: MenuViewModel
 
@@ -30,8 +46,6 @@ class MenuFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        menuViewModel =
-            ViewModelProvider(this)[MenuViewModel::class.java]
 
         _binding = FragmentMenuBinding.inflate(inflater, container, false)
 
@@ -40,12 +54,15 @@ class MenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        menuViewModel =
+            ViewModelProvider(this, viewModelFactory)[MenuViewModel::class.java]
+
         initViewPager()
         initCategoriesRW()
         initMealsRW()
 
         menuViewModel.mealCategoriesList.observe(viewLifecycleOwner) {
-
             mealCategoriesAdapter.submitList(it)
         }
         menuViewModel.mealsList.observe(viewLifecycleOwner) {
